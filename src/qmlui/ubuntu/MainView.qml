@@ -4,6 +4,7 @@ import Ubuntu.Components 1.3
 MainView {
     width: units.gu(100)
     height: units.gu(75)
+    anchorToKeyboard: true
 
     Binding {
         target: typeof window !== 'undefined' ? window : null
