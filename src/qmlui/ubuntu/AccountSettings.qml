@@ -38,7 +38,12 @@ Page {
     }
 
     ScrollView {
-        anchors.fill: parent
+        width: parent.width
+        anchors {
+            top: settingsHeader.bottom
+            topMargin: spacing
+            bottom: parent.bottom
+        }
         Flickable {
             anchors.fill: parent
             // add small buffer so last item isn't against the OSK/bottomedge
@@ -46,13 +51,7 @@ Page {
             Column {
                 id: settingsColumn
                 spacing: units.gu(2)
-
-                width: parent.width
-                anchors {
-                    top: settingsHeader.bottom
-                    topMargin: spacing
-                    bottom: parent.bottom
-                }
+                anchors.fill: parent
                 clip: true
                 ValueInput {
                     id: accountNameInput
