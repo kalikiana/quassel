@@ -37,54 +37,63 @@ Page {
         ]
     }
 
-    Column {
-        spacing: units.gu(2)
+    ScrollView {
+        anchors.fill: parent
+        Flickable {
+            anchors.fill: parent
+            // add small buffer so last item isn't against the OSK/bottomedge
+            contentHeight: settingsColumn.height + units.gu(4)
+            Column {
+                id: settingsColumn
+                spacing: units.gu(2)
 
-        width: parent.width
-        anchors {
-            top: settingsHeader.bottom
-            topMargin: spacing
-            bottom: parent.bottom
-        }
-        clip: true
-        ValueInput {
-            id: accountNameInput
-            label: qsTr('Account Name:')
-            text: accountModel.get(accountId).accountName
-            defaultValue: hostnameInput.value
-        }
-        ValueInput {
-            id: hostnameInput
-            label: qsTr('Hostname:')
-            text: accountModel.get(accountId).hostname
-        }
-        ValueInput {
-            id: portInput
-            label: qsTr('Port:')
-            text: accountModel.get(accountId).port
-            defaultValue: 4242
-        }
-        ValueInput {
-            id: userInput
-            label: qsTr('User:')
-            text: accountModel.get(accountId).user
-        }
-        ValueInput {
-            id: passwordInput
-            label: qsTr('Password:')
-            echoMode: TextInput.Password
-            text: accountModel.get(accountId).password
-        }
-        Button {
-            x: parent.spacing
-            width: parent.width - parent.spacing * 2
-            iconName: 'delete'
-            color: theme.palette.normal.negative
-            onTriggered: {
-                accountModel.removeAccount(accountId)
-                adaptivePageLayout.removePages(settingsPage)
+                width: parent.width
+                anchors {
+                    top: settingsHeader.bottom
+                    topMargin: spacing
+                    bottom: parent.bottom
+                }
+                clip: true
+                ValueInput {
+                    id: accountNameInput
+                    label: qsTr('Account Name:')
+                    text: accountModel.get(accountId).accountName
+                    defaultValue: hostnameInput.value
+                }
+                ValueInput {
+                    id: hostnameInput
+                    label: qsTr('Hostname:')
+                    text: accountModel.get(accountId).hostname
+                }
+                ValueInput {
+                    id: portInput
+                    label: qsTr('Port:')
+                    text: accountModel.get(accountId).port
+                    defaultValue: 4242
+                }
+                ValueInput {
+                    id: userInput
+                    label: qsTr('User:')
+                    text: accountModel.get(accountId).user
+                }
+                ValueInput {
+                    id: passwordInput
+                    label: qsTr('Password:')
+                    echoMode: TextInput.Password
+                    text: accountModel.get(accountId).password
+                }
+                Button {
+                    x: parent.spacing
+                    width: parent.width - parent.spacing * 2
+                    iconName: 'delete'
+                    color: theme.palette.normal.negative
+                    onTriggered: {
+                        accountModel.removeAccount(accountId)
+                        adaptivePageLayout.removePages(settingsPage)
+                    }
+                    visible: accountId
+                }
             }
-            visible: accountId
         }
     }
 }
