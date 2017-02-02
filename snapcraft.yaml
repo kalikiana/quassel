@@ -1,34 +1,56 @@
-name: quasselcore
+name: quassel-kalikiana
 version: "0.12.4"
-summary: Modern, cross-platform IRC client (core)
+summary: Modern, cross-platform IRC client
 description: |
  This is a modern, cross-platform, distributed IRC client. One
  (or multiple) client(s) can attach to and detach from a central core. It's
  much like the popular combination of screen and a text-based IRC client such
  as WeeChat, but graphical.
+grade: stable
 confinement: strict
 
 apps:
-    quasselcore:
-        command: wrap quasselcore
-        plugs: [network-bind]
+    core:
+        command: wrap quasselcore --syslog
+        plugs: [network-bind, platform]
         daemon: simple
+    quassel-kalikiana:
+        command: desktop-launch quasselclient
+        plugs: [unity7, network, platform]
+
+plugs:
+    platform:
+        content: ubuntu-app-platform1
+        default-provider: ubuntu-app-platform
+        interface: content
+        target: ubuntu-app-platform
 
 parts:
-    quasselcore:
+    quassel:
         source: .
         plugin: cmake
-        configflags: [-DUSE_QT5=1, -DWANT_MONO=0, -DWANT_QTCLIENT=0, -DCMAKE_BUILD_TYPE=Release]
-        build-packages:
-            - cmake
-            - g++
-            - zlib1g-dev
-            - qttools5-dev
-            - qtscript5-dev
-            - libqt5sql5-sqlite
-        stage-packages:
-            - libqt5sql5-sqlite
+        configflags:
+            - -DUSE_QT5=1
+            - -DWANT_MONO=0
+            - -DWANT_CORE=1
+            - -DWANT_QTCLIENT=1
+            - -DEMBED_DATA=1
+            - -DWITH_OXYGEN=0
+            - -DCMAKE_BUILD_TYPE=Release
+            - -DCMAKE_DISABLE_FIND_PACKAGE_Phonon4Qt5=ON
+            - -DCMAKE_DISABLE_FIND_PACKAGE_dbusmenu-qt5=ON
+            - -DHAVE_SSL=ON
+        build-attributes: [no-system-libraries]
+    platform:
+        plugin: dump
+        source: .
+        after: [desktop-ubuntu-app-platform]
+        prime: [ubuntu-app-platform]
+        build-attributes: [no-system-libraries]
     environment:
-        plugin: copy
-        files:
+        plugin: dump
+        source: .
+        organize:
             snap.wrapper: bin/wrap
+        prime:
+            - bin
